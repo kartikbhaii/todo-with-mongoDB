@@ -2,6 +2,14 @@
   "name": "ejs-project",
   "version": "1.0.0",
   "description": "",
+  "homepage": "https://github.com/kartikbhaii/todo-with-mongoDB#readme",
+  "bugs": {
+    "url": "https://github.com/kartikbhaii/todo-with-mongoDB/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kartikbhaii/todo-with-mongoDB.git"
+  },
   "license": "ISC",
   "author": "",
   "type": "commonjs",
@@ -12,6 +20,7 @@
   "dependencies": {
     "body-parser": "^2.2.2",
     "ejs": "^5.0.2",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "mongoose": "^9.6.3"
   }
 }
