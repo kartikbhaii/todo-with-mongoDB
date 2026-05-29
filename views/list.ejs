@@ -9,15 +9,18 @@
 
     <div class="box">
        <% newListItems.forEach((item)=>{  %>
-        <div class="item">
-            <input type="checkbox">
+        
+        <form action="/delete" method="post">
+            <div class="item">
+            <input type="checkbox" name="checkbox"  value = "<%= item._id%>" onchange="this.form.submit()">
             <p><%= item.name %></p>
             </div>
+        </form>
     <%  })  %>
 
-            <form action="" method="post">
+            <form class="item" action="" method="post">
             <input type="text" name="newItem" placeholder="Add New Task" autocomplete="off">
-            <button type ="submit" name="list" value="">+</button>
+            <button type="submit" name="list" value="">+</button>
         </form>
 
     </div>
