@@ -1,55 +1,45 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const mongoose = require("mongoose")
-
+const mongoose = require("mongoose");
 
 const app = express();
-// const items = []
 // let workItems = [];
-
 
 app.set("view engine", "ejs");
 
-app.use(bodyParser.urlencoded({extended: true})) // must use to get text from 'html forms' as post request.
- 
-app.use(express.static("public")) // this includes every file from the public folder for eg. css file or any js file, and includes it to our server.
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static("public"));
 
-
-mongoose.connect("mongodb://localhost:27017/todolistDB")
+mongoose.connect("mongodb://localhost:27017/todolistDB");
 
 const itemSchema = new mongoose.Schema({
   name: String
-})
+});
 
-const item = mongoose.model("item", itemSchema)
+const Item = mongoose.model("Item", itemSchema);
 
-const item1 = new item({
+const item1 = new Item({
   name: "Welcome to your todolist"
-})
-const item2 = new item({
+});
+
+const item2 = new Item({
   name: "Hit + button to add new task."
-})
-const item3 = new item({
+});
+
+const item3 = new Item({
   name: "Hit checkbox to delete item."
-})
+});
 
-const defaultItems = [item1, item2, item3]
-
-
-
-
-
-
-
+const defaultItems = [item1, item2, item3];
 
 app.get("/", (req, res) => {
 
-  item.find({})
+  Item.find({})
     .then((foundItems) => {
 
       if (foundItems.length === 0) {
 
-        item.insertMany(defaultItems)
+        Item.insertMany(defaultItems)
           .then(() => {
             console.log("Successfully saved default items");
             res.redirect("/");
@@ -73,36 +63,34 @@ app.get("/", (req, res) => {
     });
 
 });
+
 app.post("/", (req, res) => {
-  const itemName =  req.body.newItem;
+  const itemName = req.body.newItem;
 
-  const item = new item({
+  const newItem = new Item({
     name: itemName
-  })
+  });
 
-
-  item.save()
-
-  res.redirect("/")
+  newItem.save();
+  res.redirect("/");
 });
 
-app.get("/work", (req,res)=>{
+app.get("/work", (req, res) => {
   res.render("list", {
     listTitle: "Work List",
-     newListItems: workItems
-    })
-})
+    newListItems: workItems
+  });
+});
 
-app.post("/work", (req,res)=>{
-  let item = req.body.newItem
-  workItems.push(item)
-  res.redirect("/work")
-})
+app.post("/work", (req, res) => {
+  let item = req.body.newItem;
+  workItems.push(item);
+  res.redirect("/work");
+});
 
-app.get("/about", (req,res)=>{
-  res.render("about")
-})
-
+app.get("/about", (req, res) => {
+  res.render("about");
+});
 
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
