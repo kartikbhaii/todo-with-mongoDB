@@ -1,3 +1,7 @@
+require("dotenv").config();
+const dns = require("dns");
+dns.setServers(["8.8.8.8", "1.1.1.1"]);
+
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
@@ -10,7 +14,10 @@ app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-mongoose.connect("mongodb://localhost:27017/todolistDB");
+const DB_URI = process.env.DB_URI;
+mongoose.connect(DB_URI)
+  .then(() => console.log("Connected to MongoDB successfully!"))
+  .catch(err => console.error("MongoDB connection error:", err));
 
 const itemSchema = new mongoose.Schema({
   name: String,
@@ -173,6 +180,7 @@ app.get("/about", (req, res) => {
   res.render("about");
 });
 
-app.listen(3000, () => {
-  console.log("Server is running on port 3000");
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
