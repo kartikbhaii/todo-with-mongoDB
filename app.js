@@ -65,7 +65,7 @@ app.get("/", (req, res) => {
 
 app.get("/:customListName", (req,res)=>{
   const customListName = req.params.customListName
-  
+
   List.findOne({ name: customListName })
   .then((foundList) => {
     if (!foundList) {
@@ -76,8 +76,13 @@ app.get("/:customListName", (req,res)=>{
         name: customListName,
         items: defaultItems
       });
-      list.save();
-      res.redirect("/" + customListName)
+      list.save()
+        .then(() => {
+          res.redirect("/" + customListName);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     } else {
       // show an existing list
       res.render("list", {listTitle: foundList.name, newListItems: foundList.items})
@@ -86,21 +91,39 @@ app.get("/:customListName", (req,res)=>{
   .catch((err) => {
     console.log(err);
   });
-
-  
-
 })
 
 
 app.post("/", (req, res) => {
   const itemName = req.body.newItem;
+  const listName = req.body.list
 
   const newItem = new Item({
     name: itemName,
   });
 
-  newItem.save();
-  res.redirect("/");
+  if (listName === "Today"){
+    newItem.save()
+      .then(() => {
+        res.redirect("/");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  } else {
+    List.findOne({name:  listName})
+    .then((foundList)=>{
+      foundList.items.push(newItem)
+      return foundList.save();
+    })
+    .then(() => {
+      res.redirect("/" + listName);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  }
+
 });
 
 app.post("/delete", (req, res) => {
@@ -118,7 +141,7 @@ app.post("/delete", (req, res) => {
 
 app.post("/work", (req, res) => {
   let item = req.body.newItem;
-  workItems.push(item);
+  workItems.push(items);
   res.redirect("/work");
 });
 
